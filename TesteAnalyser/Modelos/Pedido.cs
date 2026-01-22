@@ -4,6 +4,7 @@
     {
         public int Id { get; set; }
         public int IdCliente { get; set; }
+        public int IdStatus { get; set; }
         public int Data { get; set; }
     }
 }

@@ -1,4 +1,5 @@
-﻿using TesteAnalyser.Modelos;
+﻿using TesteAnalyser.Enums;
+using TesteAnalyser.Modelos;
 using TesteAnalyser.Repository;
 
 namespace TesteAnalyser.Negocio
@@ -100,6 +101,35 @@ namespace TesteAnalyser.Negocio
                     idParametrizacao = p.Id,
                 }
             ).ToList();
+
+            var teste8 = pedidos.Any(p => p.IdStatus == (int)StatusPedidoEnum.Finalizado);
+
+            var pedido = new Pedido();
+            var teste9 = pedidosItens.Any(x => x.IdPedido == pedido.Id);
+
+            var teste10 = pedidos.Select(p => new
+            {
+                idPedido = p.Id,
+                itens = pedidosItens.Where(pi => pi.IdPedido == p.Id).ToList()
+            }).ToList();
+
+            var teste11 = pedidos.Select(p => new
+            {
+                idPedido = p.Id,
+                itens =
+                (
+                    from pi in pedidosItens
+                    where pi.IdPedido == p.Id
+                    select pi
+                )
+            }).ToList();
+
+            var teste12 = pedidos.Select(p => new
+            {
+                idPedido = p.Id,
+                itens = pedidosItens.Any(pi => pi.IdPedido == p.Id)
+            }).ToList();
+
         }
     }
 }
