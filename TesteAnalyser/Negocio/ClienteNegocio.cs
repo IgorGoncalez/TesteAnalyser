@@ -1,4 +1,5 @@
-﻿using TesteAnalyser.Repository;
+﻿using TesteAnalyser.Modelos;
+using TesteAnalyser.Repository;
 
 namespace TesteAnalyser.Negocio
 {
@@ -20,6 +21,85 @@ namespace TesteAnalyser.Negocio
             _clienteRepository.Save();
             _clienteCadastroRepository.Save();
             _produtoRepository.Save();
+        }
+
+        public void Teste2()
+        {
+            var pedidos = new List<Pedido>();
+            var pedidosItens = new List<PedidoItem>();
+
+            var documentos = new List<Documento>();
+            var parametrizacoes = new List<Parametrizacao>();
+
+            var teste1 =
+            (
+                from p in pedidos
+                join pi in pedidosItens
+                    on p.Id equals pi.IdPedido
+                select new
+                {
+                    idPedido = p.Id,
+                    idPedidoItem = pi.Id
+                }
+            ).ToList();
+
+            var teste2 =
+            (
+                from p in pedidos
+                from pi in pedidosItens
+                where pi.IdPedido == p.Id
+                select new
+                {
+                    idPedido = p.Id,
+                    idPedidoItem = pi.Id
+                }
+            ).ToList();
+
+            var teste3 =
+            (
+                from p in pedidos
+                from pi in pedidosItens
+                    .Where(pi => pi.IdPedido == p.Id)
+                select new
+                {
+                    idPedido = p.Id,
+                    idPedidoItem = pi.Id
+                }
+            ).ToList();
+
+            var teste4 =
+            (
+                from p in pedidos
+                where pedidosItens.Any(pi => pi.IdPedido == p.Id)
+                select new
+                {
+                    idPedido = p.Id,
+                }
+            ).ToList();
+
+            var teste5 =
+            (
+                from p in pedidos
+                where p.IdCliente == 1
+                select new
+                {
+                    idPedido = p.Id,
+                }
+            ).ToList();
+
+            var teste6 = pedidos.Any(p => p.IdCliente == 1);
+
+            var teste7 =
+            (
+                from d in documentos
+                from p in parametrizacoes
+                where d.DataReferencia >= p.DataInicio && d.DataReferencia <= (p.DataFim ?? d.DataReferencia)
+                select new
+                {
+                    idDocumento = d.Id,
+                    idParametrizacao = p.Id,
+                }
+            ).ToList();
         }
     }
 }
