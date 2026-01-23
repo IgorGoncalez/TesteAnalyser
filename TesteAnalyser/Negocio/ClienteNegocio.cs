@@ -1,4 +1,5 @@
-﻿using TesteAnalyser.Enums;
+﻿using TesteAnalyser.Dtos;
+using TesteAnalyser.Enums;
 using TesteAnalyser.Modelos;
 using TesteAnalyser.Repository;
 
@@ -130,6 +131,28 @@ namespace TesteAnalyser.Negocio
                 itens = pedidosItens.Any(pi => pi.IdPedido == p.Id)
             }).ToList();
 
+            var produtos = new List<Produto>();
+            var pedidosDtos = new List<PedidoDto>();
+
+            var teste13 =
+            (
+                from p in pedidosDtos
+                select new
+                {
+                    idPedido = p.Id,
+                    itens =
+                    (
+                        from pi in p.Itens
+                        join pd in produtos
+                            on pi.IdProduto equals pd.Id
+                        select new
+                        {
+                            idPedidoItem = pi.Id,
+                            idProduto = pd.Id,
+                        }
+                    ).ToList()
+                }
+            ).ToList();
         }
     }
 }
